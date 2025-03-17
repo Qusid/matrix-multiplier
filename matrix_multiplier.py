@@ -176,7 +176,16 @@ add_matrix_entry()
 add_matrix_entry()
 update_plus_button()
 
-# Replace the original Multiply button with an operation dropdown in control_frame.
+def fill_zeros():
+    # Iterate over all matrices and fill empty cells with "0"
+    for m in matrix_entries:
+        for row in m["grid"]:
+            for entry in row:
+                if entry.get().strip() == "":
+                    entry.delete(0, tk.END)
+                    entry.insert(0, "0")
+
+# Replace the original control_frame section with the operation dropdown and a new "Fill Empty with 0" button
 control_frame = tk.Frame(app, bg="#e0e0e0")
 control_frame.pack(pady=10)
 op_options = ["Multiply", "Add", "Subtract", "Transpose", "Conjugate"]
@@ -185,5 +194,7 @@ tk.Label(control_frame, text="Operation:", font=("Arial", 12), bg="#e0e0e0").pac
 op_menu = tk.OptionMenu(control_frame, op_var, *op_options, command=lambda op: compute_operation(op))
 op_menu.config(font=("Arial", 12), bg="white")
 op_menu.pack(side=tk.LEFT, padx=5)
+tk.Button(control_frame, text="Fill Empty with 0", command=fill_zeros, font=("Arial", 12),
+          bg="orange", padx=10, pady=5).pack(side=tk.LEFT, padx=5)
 
 app.mainloop()
