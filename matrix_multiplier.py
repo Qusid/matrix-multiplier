@@ -68,6 +68,9 @@ def compute_operation(op):
 
         # Save the computed result for potential copying later.
         last_result = result
+        
+        # Update expression display with operator symbols between matrices
+        update_expression_display(op)
 
         # Display result as a grid of LaTeX-rendered images per cell.
         for widget in result_matrix_frame.winfo_children():
@@ -167,6 +170,9 @@ matrix_container.pack()
 result_frame = tk.Frame(main_frame, bg="#e0e0e0")
 result_frame.pack(side=tk.RIGHT, padx=10)
 tk.Label(result_frame, text="Result:", font=("Arial", 14), bg="#e0e0e0").pack(pady=5)
+# Insert new expression frame to show input matrices with operator symbols
+expression_frame = tk.Frame(result_frame, bg="#e0e0e0")
+expression_frame.pack(pady=5)
 result_matrix_frame = tk.Frame(result_frame, bd=2, relief="groove", padx=10, pady=10, bg="white")
 result_matrix_frame.pack(pady=5)
 
@@ -208,6 +214,19 @@ op_menu.pack(side=tk.LEFT, padx=5)
 ttk.Button(control_frame, text="Fill Empty with 0", command=fill_zeros).pack(side=tk.LEFT, padx=5)
 # New button to copy the result matrix and create a new input matrix
 ttk.Button(control_frame, text="Copy Result", command=lambda: copy_result_matrix()).pack(side=tk.LEFT, padx=5)
+
+# New function to update the expression display with operator symbols
+def update_expression_display(op):
+    for widget in expression_frame.winfo_children():
+        widget.destroy()
+    if op in ["Multiply", "Add", "Subtract"] and len(matrix_entries) > 0:
+        symbol_map = {"Multiply": "×", "Add": "+", "Subtract": "−"}
+        op_symbol = symbol_map.get(op, "")
+        for i, m in enumerate(matrix_entries):
+            header_text = m["header"].cget("text") if "header" in m else f"Matrix {i+1}"
+            tk.Label(expression_frame, text=header_text, font=("Arial", 12), bg="#e0e0e0").pack(side=tk.LEFT)
+            if i < len(matrix_entries) - 1:
+                tk.Label(expression_frame, text=op_symbol, font=("Arial", 12, "bold"), bg="#e0e0e0", padx=10).pack(side=tk.LEFT)
 
 # New function to copy the computed result matrix into a new matrix entry
 def copy_result_matrix():
