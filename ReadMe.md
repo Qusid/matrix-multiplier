@@ -1,15 +1,15 @@
 # Matrix Multiplier
 
-Matrix Multiplier is a Python GUI application built with Tkinter and Sympy that allows you to create, manipulate, and perform operations on matrices containing symbolic values. The application supports operations such as multiplication, addition, subtraction, transpose, and conjugate. All results are rendered in a neat LaTeX-like format.
+## Overview
+Matrix Multiplier is a sophisticated Python GUI application combining the ease of Tkinter with the power of Sympy for symbolic computation. This tool enables you to create, manipulate, and compute operations on both numeric and symbolic matrices, with results rendered in a clean LaTeX-like format for superior clarity.
 
 ## Features
-
-- **Dynamic Matrix Creation:** Add or remove matrices on the fly.
-- **Customizable Matrix Size:** Select matrix dimensions using dropdowns.
-- **Symbolic Computation:** Work with numbers and symbolic expressions using Sympy.
-- **Multiple Operations:** Choose operations (Multiply, Add, Subtract, Transpose, Conjugate) from a dropdown menu.
-- **LaTeX Rendered Output:** View results as rendered mathematical expressions.
-- **User-Friendly Interface:** Simple and intuitive layout using Tkinter.
+- **Dynamic Matrix Creation:** Effortlessly add or remove matrices.
+- **Customizable Dimensions:** Adjust matrix size via intuitive dropdown menus.
+- **Symbolic & Numeric Computation:** Seamlessly mix symbolic algebra with numerical precision.
+- **Multiple Operations:** Multiply, add, subtract, transpose, or conjugate matrices.
+- **Aesthetic Rendering:** Enjoy visually appealing LaTeX-style outputs.
+- **User-Friendly Interface:** Designed with simplicity and professionalism using Tkinter.
 
 ## Detailed Features
 
@@ -23,28 +23,31 @@ Matrix Multiplier is a Python GUI application built with Tkinter and Sympy that 
 ## Requirements
 
 - Python 3.x
-- [Tkinter](https://docs.python.org/3/library/tkinter.html) (usually included with Python)
-- [Sympy](https://www.sympy.org/en/index.html)
-- [Pillow (PIL)](https://python-pillow.org/)
-- [Matplotlib](https://matplotlib.org/)
+- [Tkinter](https://docs.python.org/3/library/tkinter.html)
+- [Sympy](https://www.sympy.org)
+- [Pillow (PIL)](https://python-pillow.org)
+- [Matplotlib](https://matplotlib.org)
 
 ## Installation
 
-Install the required packages using pip:
+Install the necessary packages using the provided requirements file:
 
 ```bash
-pip install sympy pillow matplotlib
+pip install -r requirements.txt
 ```
 
 ## Usage
 
-Run the application by executing:
+Launch the application by executing:
 
 ```bash
 python d:\Repos\matrix-multiplier\matrix_multiplier.py
 ```
 
-Use the GUI to add matrices, set their dimensions, enter values (numeric or symbolic), and select the desired operation from the dropdown menu to see the result rendered in a mathematical format.
+Interact with the intuitive GUI to:
+- Add matrices and define dimensions.
+- Input symbolic or numeric values.
+- Select the desired operation to view results rendered in a professional, easy-to-read format.
 
 ## License
 
