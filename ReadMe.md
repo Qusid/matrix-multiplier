@@ -11,6 +11,15 @@ Matrix Multiplier is a Python GUI application built with Tkinter and Sympy that 
 - **LaTeX Rendered Output:** View results as rendered mathematical expressions.
 - **User-Friendly Interface:** Simple and intuitive layout using Tkinter.
 
+## Detailed Features
+
+- **Matrix Setup:** Easily create matrices with user-defined rows and columns.
+- **Real-Time Updates:** Instantly see changes as you modify matrices.
+- **Error Handling:** Prompts for invalid entries to help maintain correct symbolic or numeric input.
+- **Flexible Operations:** Support for combining symbolic algebra with numerical calculations.
+- **Visual Output:** Matplotlib integration provides a clear, well-formatted view of results.
+- **Interactive UI:** Intuitive Tkinter-based interface for seamless user interactions.
+
 ## Requirements
 
 - Python 3.x
