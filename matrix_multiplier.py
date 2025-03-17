@@ -129,8 +129,9 @@ def add_matrix_entry():
                   command=lambda m=m, container=container: remove_matrix(m, container)).pack(side=tk.RIGHT, padx=5)
     
     # Horizontal drop-down menus for row and column selection without extra labels
-    rows_options = ["2", "3", "4", "5"]
-    cols_options = ["2", "3", "4", "5"]
+    # Updated dropdown options to start from "1"
+    rows_options = ["1", "2", "3", "4", "5"]
+    cols_options = ["1", "2", "3", "4", "5"]
     row_var = tk.StringVar(); row_var.set("3")
     col_var = tk.StringVar(); col_var.set("3")
     # Place drop-down menus side by side in a centered frame
@@ -139,6 +140,8 @@ def add_matrix_entry():
     row_menu = tk.OptionMenu(size_frame, row_var, *rows_options, command=lambda r, m=m, cv=col_var: update_grid(m, r, cv.get()))
     row_menu.config(font=("Arial", 12), bg="white")
     row_menu.pack(side=tk.LEFT, padx=5)
+    # New label between dropdowns
+    tk.Label(size_frame, text=" X ", font=("Arial", 12), bg="#f0f0f0").pack(side=tk.LEFT, padx=5)
     col_menu = tk.OptionMenu(size_frame, col_var, *cols_options, command=lambda c, m=m, rv=row_var: update_grid(m, rv.get(), c))
     col_menu.config(font=("Arial", 12), bg="white")
     col_menu.pack(side=tk.LEFT, padx=5)
@@ -215,6 +218,13 @@ ttk.Button(control_frame, text="Fill Empty with 0", command=fill_zeros).pack(sid
 # New button to copy the result matrix and create a new input matrix
 ttk.Button(control_frame, text="Copy Result", command=lambda: copy_result_matrix()).pack(side=tk.LEFT, padx=5)
 
+# New drop-down for special matrices.
+special_matrix_options = ["Select Special Matrix", "Pauli X", "Pauli Y", "Pauli Z", "Hadamard", "CNOT"]
+special_matrix_var = tk.StringVar(); special_matrix_var.set(special_matrix_options[0])
+ttk.OptionMenu(control_frame, special_matrix_var, special_matrix_options[0],
+    *special_matrix_options[1:],
+    command=lambda sp: (add_special_matrix(sp), special_matrix_var.set(special_matrix_options[0]))).pack(side=tk.LEFT, padx=5)
+
 # New function to update the expression display with operator symbols
 def update_expression_display(op):
     for widget in expression_frame.winfo_children():
@@ -250,8 +260,9 @@ def copy_result_matrix():
                   command=lambda m=m, container=container: remove_matrix(m, container)).pack(side=tk.RIGHT, padx=5)
 
     # Create size frame with drop-down menus for rows and columns
-    rows_options = ["2", "3", "4", "5"]
-    cols_options = ["2", "3", "4", "5"]
+    # Updated dropdown options to start from "1"
+    rows_options = ["1", "2", "3", "4", "5"]
+    cols_options = ["1", "2", "3", "4", "5"]
     # Set dimensions based on last_result
     r_dim, c_dim = last_result.shape
     row_var = tk.StringVar(); row_var.set(str(r_dim))
@@ -262,6 +273,8 @@ def copy_result_matrix():
     row_menu = tk.OptionMenu(size_frame, row_var, *rows_options, command=lambda r, m=m, cv=col_var: update_grid(m, r, cv.get()))
     row_menu.config(font=("Arial", 12), bg="white")
     row_menu.pack(side=tk.LEFT, padx=5)
+    # New label between dropdowns
+    tk.Label(size_frame, text=" X ", font=("Arial", 12), bg="#f0f0f0").pack(side=tk.LEFT, padx=5)
     col_menu = tk.OptionMenu(size_frame, col_var, *cols_options, command=lambda c, m=m, rv=row_var: update_grid(m, rv.get(), c))
     col_menu.config(font=("Arial", 12), bg="white")
     col_menu.pack(side=tk.LEFT, padx=5)
@@ -276,6 +289,65 @@ def copy_result_matrix():
             m["grid"][i][j].delete(0, tk.END)
             m["grid"][i][j].insert(0, str(last_result[i, j]))
 
+    matrix_entries.append(m)
+    update_plus_button()
+
+# New function to add a special matrix entry pre-filled with a defined matrix.
+def add_special_matrix(special_name):
+    special_matrices = {
+        "Pauli X": sympy.Matrix([[0, 1], [1, 0]]),
+        "Pauli Y": sympy.Matrix([[0, -sympy.I], [sympy.I, 0]]),
+        "Pauli Z": sympy.Matrix([[1, 0], [0, -1]]),
+        "Hadamard": sympy.Matrix([[1, 1], [1, -1]])/sympy.sqrt(2),
+        "CNOT": sympy.Matrix([
+                    [1,0,0,0],
+                    [0,1,0,0],
+                    [0,0,0,1],
+                    [0,0,1,0]
+                 ])
+    }
+    if special_name not in special_matrices:
+        messagebox.showerror("Error", f"Unknown special matrix: {special_name}")
+        return
+    mat_val = special_matrices[special_name]
+    r_dim, c_dim = mat_val.shape
+
+    m = {}
+    container = tk.Frame(matrix_container, bd=2, relief="groove", padx=10, pady=10, bg="#f0f0f0")
+    container.pack(side=tk.LEFT, padx=10, pady=10)
+    header_frame = tk.Frame(container, bg="#f0f0f0")
+    header_frame.pack(fill="x")
+    label = tk.Label(header_frame, text=f"{special_name} Matrix", font=("Arial", 14), bg="#f0f0f0")
+    label.pack(side=tk.LEFT, expand=True, pady=5)
+    m["header"] = label
+    if len(matrix_entries) >= 1:
+        tk.Button(header_frame, text="X", font=("Arial", 10), bg="red", fg="white",
+                  command=lambda m=m, container=container: remove_matrix(m, container)).pack(side=tk.RIGHT, padx=5)
+    # Updated dropdown options to start from "1"
+    rows_options = [str(i) for i in range(1,6)]
+    cols_options = [str(i) for i in range(1,6)]
+    row_var = tk.StringVar(); row_var.set(str(r_dim))
+    col_var = tk.StringVar(); col_var.set(str(c_dim))
+    size_frame = tk.Frame(container, bg="#f0f0f0")
+    size_frame.pack(anchor="center", pady=5)
+    row_menu = tk.OptionMenu(size_frame, row_var, *rows_options,
+                             command=lambda r, m=m, cv=col_var: update_grid(m, r, cv.get()))
+    row_menu.config(font=("Arial", 12), bg="white")
+    row_menu.pack(side=tk.LEFT, padx=5)
+    # New label between dropdowns
+    tk.Label(size_frame, text=" X ", font=("Arial", 12), bg="#f0f0f0").pack(side=tk.LEFT, padx=5)
+    col_menu = tk.OptionMenu(size_frame, col_var, *cols_options,
+                             command=lambda c, m=m, rv=row_var: update_grid(m, rv.get(), c))
+    col_menu.config(font=("Arial", 12), bg="white")
+    col_menu.pack(side=tk.LEFT, padx=5)
+    grid_frame = tk.Frame(container, bg="#f0f0f0")
+    grid_frame.pack()
+    m["grid_frame"] = grid_frame
+    update_grid(m, row_var.get(), col_var.get())
+    for i in range(r_dim):
+        for j in range(c_dim):
+            m["grid"][i][j].delete(0, tk.END)
+            m["grid"][i][j].insert(0, str(mat_val[i, j]))
     matrix_entries.append(m)
     update_plus_button()
 
