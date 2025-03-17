@@ -4,8 +4,12 @@ import sympy
 from io import BytesIO
 from PIL import Image, ImageTk
 import matplotlib.pyplot as plt
+from tkinter import ttk  # new import for themed widgets
 
 default_size_options = ["2x2", "3x3", "4x4"]
+
+# Add a global variable to store the last computed result
+last_result = None
 
 def render_latex(expr):
     # Render a sympy expression to a PhotoImage using matplotlib mathtext
@@ -22,6 +26,7 @@ def render_latex(expr):
     return photo
 
 def compute_operation(op):
+    global last_result
     try:
         matrices = []
         for m in matrix_entries:
@@ -60,6 +65,9 @@ def compute_operation(op):
             result = matrices[0].conjugate()
         else:
             result = matrices[0]
+
+        # Save the computed result for potential copying later.
+        last_result = result
 
         # Display result as a grid of LaTeX-rendered images per cell.
         for widget in result_matrix_frame.winfo_children():
@@ -142,6 +150,9 @@ def add_matrix_entry():
 app = tk.Tk()
 app.title("Matrix Multiplier")
 app.configure(bg="#e0e0e0")
+# Set up ttk style for a modern theme
+style = ttk.Style(app)
+style.theme_use("clam")  # choose a theme like 'clam'; try 'alt' or others for different looks
 
 # Horizontal layout: left frame for matrices, right frame for result
 main_frame = tk.Frame(app, bg="#e0e0e0")
@@ -188,13 +199,65 @@ def fill_zeros():
 # Replace the original control_frame section with the operation dropdown and a new "Fill Empty with 0" button
 control_frame = tk.Frame(app, bg="#e0e0e0")
 control_frame.pack(pady=10)
-op_options = ["Multiply", "Add", "Subtract", "Transpose", "Conjugate"]
+op_options = ["Choose Operation", "Multiply", "Add", "Subtract", "Transpose", "Conjugate"]
 op_var = tk.StringVar(); op_var.set(op_options[0])
-tk.Label(control_frame, text="Operation:", font=("Arial", 12), bg="#e0e0e0").pack(side=tk.LEFT, padx=5)
-op_menu = tk.OptionMenu(control_frame, op_var, *op_options, command=lambda op: compute_operation(op))
-op_menu.config(font=("Arial", 12), bg="white")
+ttk.Label(control_frame, text="Operation:", font=("Arial", 12)).pack(side=tk.LEFT, padx=5)
+op_menu = ttk.OptionMenu(control_frame, op_var, op_options[0], *op_options[1:], command=lambda op: compute_operation(op))
+op_menu.config(style="TMenubutton")
 op_menu.pack(side=tk.LEFT, padx=5)
-tk.Button(control_frame, text="Fill Empty with 0", command=fill_zeros, font=("Arial", 12),
-          bg="orange", padx=10, pady=5).pack(side=tk.LEFT, padx=5)
+ttk.Button(control_frame, text="Fill Empty with 0", command=fill_zeros).pack(side=tk.LEFT, padx=5)
+# New button to copy the result matrix and create a new input matrix
+ttk.Button(control_frame, text="Copy Result", command=lambda: copy_result_matrix()).pack(side=tk.LEFT, padx=5)
+
+# New function to copy the computed result matrix into a new matrix entry
+def copy_result_matrix():
+    global last_result
+    if last_result is None:
+        messagebox.showerror("Error", "No result available to copy!")
+        return
+
+    m = {}
+    container = tk.Frame(matrix_container, bd=2, relief="groove", padx=10, pady=10, bg="#f0f0f0")
+    container.pack(side=tk.LEFT, padx=10, pady=10)
+
+    # Create header with centered label and remove button
+    header_frame = tk.Frame(container, bg="#f0f0f0")
+    header_frame.pack(fill="x")
+    label = tk.Label(header_frame, text=f"Matrix {len(matrix_entries)+1}:", font=("Arial", 14), bg="#f0f0f0")
+    label.pack(side=tk.LEFT, expand=True, pady=5)
+    m["header"] = label
+    if len(matrix_entries) >= 1:
+        tk.Button(header_frame, text="X", font=("Arial", 10), bg="red", fg="white",
+                  command=lambda m=m, container=container: remove_matrix(m, container)).pack(side=tk.RIGHT, padx=5)
+
+    # Create size frame with drop-down menus for rows and columns
+    rows_options = ["2", "3", "4", "5"]
+    cols_options = ["2", "3", "4", "5"]
+    # Set dimensions based on last_result
+    r_dim, c_dim = last_result.shape
+    row_var = tk.StringVar(); row_var.set(str(r_dim))
+    col_var = tk.StringVar(); col_var.set(str(c_dim))
+    size_frame = tk.Frame(container, bg="#f0f0f0")
+    size_frame.pack(anchor="center", pady=5)
+    tk.OptionMenu(size_frame, row_var, *rows_options, command=lambda r, m=m, cv=col_var: update_grid(m, r, cv.get())).config(font=("Arial", 12), bg="white")
+    row_menu = tk.OptionMenu(size_frame, row_var, *rows_options, command=lambda r, m=m, cv=col_var: update_grid(m, r, cv.get()))
+    row_menu.config(font=("Arial", 12), bg="white")
+    row_menu.pack(side=tk.LEFT, padx=5)
+    col_menu = tk.OptionMenu(size_frame, col_var, *cols_options, command=lambda c, m=m, rv=row_var: update_grid(m, rv.get(), c))
+    col_menu.config(font=("Arial", 12), bg="white")
+    col_menu.pack(side=tk.LEFT, padx=5)
+
+    # Create grid and update with last_result values
+    grid_frame = tk.Frame(container, bg="#f0f0f0")
+    grid_frame.pack()
+    m["grid_frame"] = grid_frame
+    update_grid(m, row_var.get(), col_var.get())
+    for i in range(r_dim):
+        for j in range(c_dim):
+            m["grid"][i][j].delete(0, tk.END)
+            m["grid"][i][j].insert(0, str(last_result[i, j]))
+
+    matrix_entries.append(m)
+    update_plus_button()
 
 app.mainloop()
