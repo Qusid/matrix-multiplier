@@ -41,7 +41,7 @@ pip install -r requirements.txt
 Launch the application by executing:
 
 ```bash
-python d:\Repos\matrix-multiplier\matrix_multiplier.py
+python matrix_multiplier.py
 ```
 
 Interact with the intuitive GUI to:
