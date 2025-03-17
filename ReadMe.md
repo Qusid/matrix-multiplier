@@ -1,5 +1,7 @@
 # Matrix Multiplier
 
+![alt text](image.png)
+
 ## Overview
 Matrix Multiplier is a sophisticated Python GUI application combining the ease of Tkinter with the power of Sympy for symbolic computation. This tool enables you to create, manipulate, and compute operations on both numeric and symbolic matrices, with results rendered in a clean LaTeX-like format for superior clarity.
 
