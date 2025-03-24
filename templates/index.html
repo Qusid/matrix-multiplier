@@ -63,7 +63,8 @@
             <div class="matrix-panel" id="matrix-panel-1">
                 <div class="matrix-header">
                     <strong>Matrix 1:</strong>
-                    <!-- No remove button for first panel -->
+                    <!-- Removed "no remove button" comment and added remove button -->
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeMatrixField(1)">X</button>
                 </div>
                 <div class="matrix-size mb-2">
                     Rows: 
@@ -266,6 +267,11 @@ function removeMatrixField(index) {
         colSel.id = "cols-" + newNum;
         var gridDiv = panels[i].querySelector('.matrix-grid');
         gridDiv.id = "grid-" + newNum;
+        // Update the remove button's onclick attribute
+        var btn = panels[i].querySelector('.matrix-header button');
+        if (btn) {
+            btn.setAttribute("onclick", "removeMatrixField(" + newNum + ")");
+        }
     }
     matrixCount = panels.length;
     updateExpression();
