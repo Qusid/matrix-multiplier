@@ -3,7 +3,7 @@
 ![alt text](image.png)
 
 ## Overview
-Matrix Multiplier is a sophisticated Python GUI application combining the ease of Tkinter with the power of Sympy for symbolic computation. This tool enables you to create, manipulate, and compute operations on both numeric and symbolic matrices, with results rendered in a clean LaTeX-like format for superior clarity.
+Matrix Multiplier is a sophisticated Python application providing both a web (Flask) and desktop (Tkinter) interface for creating, manipulating, and computing operations on numeric and symbolic matrices using Sympy. Results are rendered in a clean LaTeX-style format for superior clarity.
 
 ## Features
 - **Dynamic Matrix Creation:** Effortlessly add or remove matrices.
@@ -11,20 +11,25 @@ Matrix Multiplier is a sophisticated Python GUI application combining the ease o
 - **Symbolic & Numeric Computation:** Seamlessly mix symbolic algebra with numerical precision.
 - **Multiple Operations:** Multiply, add, subtract, transpose, or conjugate matrices.
 - **Aesthetic Rendering:** Enjoy visually appealing LaTeX-style outputs.
-- **User-Friendly Interface:** Designed with simplicity and professionalism using Tkinter.
+- **User-Friendly Interfaces:** Both a web-based interface with Flask and a desktop GUI using Tkinter.
+- **Improved Copy Functionality:** The "Copy Result" feature now extracts only matrix data in the proper dimensions.
+- **Special Matrices:** Quickly insert matrices such as Pauli X, Pauli Y, Pauli Z, Hadamard, and CNOT.
 
-## Detailed Features
-
-- **Matrix Setup:** Easily create matrices with user-defined rows and columns.
-- **Real-Time Updates:** Instantly see changes as you modify matrices.
-- **Error Handling:** Prompts for invalid entries to help maintain correct symbolic or numeric input.
-- **Flexible Operations:** Support for combining symbolic algebra with numerical calculations.
-- **Visual Output:** Matplotlib integration provides a clear, well-formatted view of results.
-- **Interactive UI:** Intuitive Tkinter-based interface for seamless user interactions.
+## Detailed Updates
+- **Web App Enhancements:**
+  - Updated the copy function in the web interface so that it extracts and formats only the matrix values, avoiding extraneous output.
+  - Grids automatically adjust to the correct dimensions when the result is copied.
+- **Desktop GUI Enhancements:**
+  - Improved “Copy Result” logic to fill new matrix entries with the previously computed result.
+  - Enhanced error handling and layout improvements in the Tkinter interface.
+- **General Improvements:**
+  - Consistent styling across both interfaces.
+  - Enhanced documentation and user guidance through real-time expression updates.
 
 ## Requirements
 
 - Python 3.x
+- [Flask](https://flask.palletsprojects.com/)
 - [Tkinter](https://docs.python.org/3/library/tkinter.html)
 - [Sympy](https://www.sympy.org)
 - [Pillow (PIL)](https://python-pillow.org)
@@ -32,7 +37,7 @@ Matrix Multiplier is a sophisticated Python GUI application combining the ease o
 
 ## Installation
 
-Install the necessary packages using the provided requirements file:
+Install the necessary packages using the requirements file:
 
 ```bash
 pip install -r requirements.txt
@@ -40,17 +45,24 @@ pip install -r requirements.txt
 
 ## Usage
 
-Launch the application by executing:
+### Web Version
+1. Run the Flask app:
+   ```bash
+   python app.py
+   ```
+2. Open your browser and navigate to `http://127.0.0.1:5000/`.
+3. Create or modify matrices, then select an operation and click **Compute**.
+4. Use the **Copy Result** button to extract the computed matrix into a new input panel.
 
-```bash
-python matrix_multiplier.py
-```
-
-Interact with the intuitive GUI to:
-- Add matrices and define dimensions.
-- Input symbolic or numeric values.
-- Select the desired operation to view results rendered in a professional, easy-to-read format.
+### Desktop GUI Version
+1. Run the Tkinter application:
+   ```bash
+   python matrix_multiplier.py
+   ```
+2. Enter or modify matrix values in the provided grids.
+3. Select an operation from the dropdown and see the rendered result.
+4. Use **Copy Result** to duplicate the result into a new matrix entry.
+5. Special matrices can be inserted via the dropdown menu.
 
 ## License
-
 This project is licensed under the MIT License.
