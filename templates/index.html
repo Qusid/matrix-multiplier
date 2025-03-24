@@ -217,6 +217,12 @@ window.onload = function() {
             }
         }
     }
+    // Ensure grids are generated for panels without prefill
+    for (var i = 1; i <= matrixCount; i++) {
+        if (!matrixValues.hasOwnProperty("matrix" + i)) {
+            updateMatrixGrid(i);
+        }
+    }
 };
 
 // addMatrixField() now inserts new panel before the Add Matrix button.
@@ -284,10 +290,30 @@ function copyResult() {
     addMatrixField();
     var newPanelId = matrixCount;
     var resultText = resultHidden.textContent.trim();
-    var rows = resultText.split("\n");
-    var prefill = rows.map(function(r) { return r.trim().split(/\s+/); });
+    var prefill = [];
+    // If in sympy Matrix format, extract inner array string.
+    if (resultText.startsWith("Matrix(")) {
+        var inner = resultText.slice(7, -1).trim();
+        // Remove outer brackets if present.
+        if (inner.startsWith("[") && inner.endsWith("]")) {
+            inner = inner.slice(1, -1);
+        }
+        // Split rows on "],[".
+        var rowsStr = inner.split(/\],\s*\[/);
+        prefill = rowsStr.map(function(row) {
+            // Remove any stray brackets.
+            row = row.replace(/[\[\]]/g, '');
+            return row.split(',').map(function(cell) {
+                return cell.trim();
+            });
+        });
+    } else {
+        // Fallback: assume newline separated values.
+        var rows = resultText.split("\n");
+        prefill = rows.map(function(r) { return r.trim().split(/\s+/); });
+    }
     var rowCount = prefill.length;
-    var colCount = prefill[0].length;
+    var colCount = (prefill[0] && prefill[0].length) || 0;
     document.getElementById("rows-" + newPanelId).value = rowCount;
     document.getElementById("cols-" + newPanelId).value = colCount;
     createMatrixGrid(newPanelId, rowCount, colCount, prefill);
